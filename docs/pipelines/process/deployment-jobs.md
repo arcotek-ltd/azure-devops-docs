@@ -471,6 +471,7 @@ stages:
       vmImage: 'ubuntu-latest'
     environment: 
       name: env2
+      resourceName: myVM01
       resourceType: virtualmachine
     strategy:                  
       runOnce:
@@ -484,26 +485,23 @@ stages:
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      myVarFromDeploymentJob: $[ dependencies.A1.outputs['A1.setvarStep.myOutputVar'] ]
+      myVarFromDeploymentJobA1: $[ dependencies.A1.outputs['A1.setvarStep.myOutputVar'] ]
       
     steps:
-    - script: "echo $(myVarFromDeploymentJob)"
-      name: echovar
- 
+    - script: "echo $(myVarFromDeploymentJobA1)"
+       
   - job: B2
     dependsOn: A2
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      myVarFromDeploymentJob: $[ dependencies.A2.outputs['A2.setvarStepTwo.myOutputVar'] ]
-      myOutputVarTwo: $[ dependencies.A2.outputs['Deploy_vmsfortesting.setvarStepTwo.myOutputVarTwo'] ]
+      myVarFromDeploymentJobA2: $[ dependencies.A2.outputs['deploy_myVM01.setvarStepTwo.myOutputVarTwo'] ]
     
     steps:
-    - script: "echo $(myOutputVarTwo)"
-      name: echovartwo
+    - script: "echo $(myVarFromDeploymentJobA2)"
 ```
 
-When you output a variable from a deployment job, referencing it from the next job uses different syntax depending on if you want to set a variable or use it as a condition for the stage. 
+When you output a variable from a deployment job, referencing it in a different stage uses different syntax depending on if you want to set a variable or use it as a condition for the stage. 
 
 ```yaml
 stages:
